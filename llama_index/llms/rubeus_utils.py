@@ -1,15 +1,7 @@
 from enum import Enum
-from typing import (
-    List,
-    Dict,
-    Any,
-    Optional,
-    Union,
-    Mapping,
-    Literal,
-)
-from pydantic import BaseModel
+from typing import Any, Dict, List, Literal, Mapping, Optional, Union
 
+from pydantic import BaseModel
 
 MISSING_API_KEY_ERROR_MESSAGE = """No API key found for Portkey.
 Please set either the PORTKEY_API_KEY environment variable or \
@@ -218,3 +210,6 @@ class RubeusResponse(BaseModel):
     model: str
     choices: List[Any]
     raw_body: Dict[str, Any]
+
+    def __pydantic_post_init__(self):
+        pass

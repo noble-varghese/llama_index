@@ -1,18 +1,20 @@
 import json
 from types import TracebackType
-from typing import Dict, Any, Union, Mapping, cast, List, Optional, Type
+from typing import Any, Dict, List, Mapping, Optional, Type, Union, cast
+
 import httpx
+from pydantic import BaseModel
+
+from llama_index.llms import rubeus_exceptions as exceptions
 from llama_index.llms.rubeus_utils import (
-    remove_empty_values,
     DEFAULT_MAX_RETRIES,
     Body,
-    Options,
     Config,
+    Options,
     ProviderOptions,
     RubeusResponse,
+    remove_empty_values,
 )
-from pydantic import BaseModel
-from llama_index.llms import rubeus_exceptions as exceptions
 
 
 class APIClient:
@@ -129,7 +131,7 @@ class APIClient:
 
     def _build_request(self, options: Options) -> httpx.Request:
         headers = self._build_headers(options)
-        params = options.params
+        params = getattr(options, "params", None)
         json_body = options.json_body
         request = self._client.build_request(
             method=options.method,
@@ -137,7 +139,7 @@ class APIClient:
             headers=headers,
             params=params,
             json=json_body,
-            timeout=options.timeout,
+            timeout=getattr(options, "timeout", None),
         )
         return request
 
